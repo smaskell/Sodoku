@@ -1,4 +1,4 @@
-# Authod: Samuel Maskell <samuelmaskell@gmail.com> 
+# Author: Samuel Maskell <samuelmaskell@gmail.com> 
 # Based on work by: Ali Assaf <ali.assaf.mail@gmail.com>
 # Copyright: (C) 2014 Samuel Maskell
 # License: GNU General Public License <http://www.gnu.org/licenses/>
