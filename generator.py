@@ -5,7 +5,6 @@
 
 from itertools import product
 from random import shuffle
-from copy import deepcopy
 
 from solver import solve_sudoku
 
@@ -42,7 +41,7 @@ def remove_clues(size, grid):
     for row,col in entries:
         entry = grid[row][col]
         grid[row][col] = 0
-        solutions = solve_sudoku(size, deepcopy(grid))
+        solutions = solve_sudoku(size, grid)
         try:
             next(solutions)
         except StopIteration:
@@ -58,6 +57,7 @@ def gen_rand_grid(size):
     return remove_clues(size, next(solve_sudoku(size, gen_rand_start_grid(size), shuffle_rows=True)))
 
 if __name__ == "__main__":
-    x = gen_rand_grid(3)
-    print_grid(x)
+    for i in xrange(1):
+        x = gen_rand_grid(3)
+        print_grid(x)
 
