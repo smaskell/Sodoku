@@ -42,15 +42,15 @@ def remove_clues(size, grid):
         entry = grid[row][col]
         grid[row][col] = 0
         solutions = solve_sudoku(size, grid)
+        zero_sols = True
         try:
             next(solutions)
-        except StopIteration:
-            grid[row][col] = entry
-        try:
+            zero_sols = False
             next(solutions)
             grid[row][col] = entry
         except StopIteration:
-            pass
+            if zero_sols:
+                grid[row][col] = entry
     return grid
 
 def gen_rand_grid(size):
