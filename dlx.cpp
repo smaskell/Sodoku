@@ -94,8 +94,9 @@ void select(Node *col){
 
 	for(Node* row = col->down; row != col; row = row->down) {
 		for(Node *right = row->right; right!=row; right = right->right){
+			right->col_header->col_size--;
 			right->up->down = right->down;
-			right->down->up = right->up->down;
+			right->down->up = right->up;
 		}
 	}
 }
@@ -105,6 +106,7 @@ void deselect(Node *col){
 	     	for( Node* left = row->left ; left != row ; left = left->left) { 
 	     		left->up->down = left;
 	     		left->down->up = left;
+	     		left->col_header->col_size++;
 	     	} 
 	}
 	col->right->left = col;
@@ -124,18 +126,20 @@ Node *chooseNextColumn(Node *h){
 }
 
 void print_solution(vector<int> *sol) {
-	for(vector<int>::const_iterator i = sol->begin(); i != sol->end(); ++i)
+	for(vector<int>::const_iterator i = sol->begin(); i != sol->end(); ++i) {
 	    cout << *i << ' ';
+	}
+	cout << endl;
 }
 
 void search(Node *h, vector<int> *sol, int depth) {
-	// cout << "at depth " << depth << endl;
 	if (h->right == h) {
 		// cout << "printing solution" << endl;
 		print_solution(sol);
 		return;
 	}
 	Node* col = chooseNextColumn(h);
+	// cout << "selecting col " << col->num << endl;
 	select(col);
 
 	for(Node* row = col->down; row != col; row = row->down){
@@ -148,13 +152,25 @@ void search(Node *h, vector<int> *sol, int depth) {
 
 		search(h, sol, depth + 1);
 
+		// cout << "putting back " << row->num << endl;
+
 		for(Node *left = row->left; left != row; left=left->left){
 			deselect(left->col_header);
 		}
 		sol->pop_back();
 	}
 
+	// cout << "deselecting col " << col->num << endl;
 	deselect(col);
+	return;
+}
+
+int count_cols(Node* h) {
+	int num_cols = 0;
+	for(Node* col = h->right; col!=h; col=col->right){
+		num_cols++;
+	}
+	return num_cols;
 }
 
 int main() {

@@ -61,4 +61,6 @@ if __name__ == "__main__":
         x = gen_rand_grid(2)
         X,Y,sol = sudoku_to_cover(2, x)
         print_cover(X,Y)
+        # for sol in solve_sudoku(2, x):
+        #     print_grid(sol)
 
