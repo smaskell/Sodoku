@@ -6,7 +6,7 @@
 from itertools import product
 from random import shuffle
 
-from solver import solve_sudoku
+from solver import solve_sudoku, sudoku_to_cover, print_cover
 
 def print_grid(grid):
     for row in grid:
@@ -58,6 +58,7 @@ def gen_rand_grid(size):
 
 if __name__ == "__main__":
     for i in xrange(1):
-        x = gen_rand_grid(3)
-        print_grid(x)
+        x = gen_rand_grid(2)
+        X,Y,sol = sudoku_to_cover(2, x)
+        print_cover(X,Y)
 

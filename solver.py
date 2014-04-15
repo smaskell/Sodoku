@@ -24,6 +24,16 @@ def sudoku_to_cover(size, grid):
                 select(X, Y, (i, j, n))
     return X,Y,solution
 
+def print_cover(X,Y):
+    print len(Y), len(X)
+    for row, cols in Y.items():
+        for col in X:
+            if col in cols:
+                print "1",
+            else:
+                print "0",
+        print
+
 
 def cover_to_sudoku(size, cover):
     N = size*size
