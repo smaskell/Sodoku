@@ -24,9 +24,17 @@ def sudoku_to_cover(size, grid):
                 select(X, Y, (i, j, n))
     return X,Y,solution
 
+
 def print_cover(X,Y):
-    print len(Y), len(X)
+    # print len(Y), len(X)
+    rows_used = set()
+    for val in X.itervalues():
+        for row in val:
+            rows_used.add(row)
+    print len(rows_used), len(X)
     for row, cols in Y.items():
+        if row not in rows_used:
+            continue;
         for col in X:
             if col in cols:
                 print "1",
