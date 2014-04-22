@@ -6,6 +6,7 @@ from itertools import product
 from random import shuffle
 import subprocess
 import time
+from sat_encoder import sudoku_to_sat
 
 from solver import solve_sudoku, sudoku_to_cover, print_cover
 from dlx import solve_sudoku as dlx_solver
@@ -139,8 +140,11 @@ if __name__ == "__main__":
     # print_grid(x)
     # dlx_solver(2,x)
     x = gen_rand_grid(3)
-    X,Y,sol = sudoku_to_cover(3, x)
-    print_cover(X,Y)
+    # X,Y,sol = sudoku_to_cover(3, x)
+    # print_cover(X,Y)
+    clauses = sudoku_to_sat(x,False)
+    for clause in clauses:
+        print " ".join(clause)
     # run_process(X,Y,x)
     # for sol in solve_sudoku(2, x):
     #     print_grid(sol)
