@@ -5,7 +5,6 @@
 from itertools import product
 from random import shuffle
 import subprocess
-import time
 from sat_encoder import sudoku_to_sat
 
 from solver import solve_sudoku, sudoku_to_cover, print_cover
@@ -88,23 +87,18 @@ def print_grid_with_rows(cover_rows, covered_rows, grid):
         grid[r][c] = n
     print_grid(grid)
     print
-    # if not check_grid_valid(3,grid):
-    #     print "bad"
-    # else:
-    #     print "good"
-    # print
     for row in covered_rows:
         r,c,n = cover_rows[row]
         grid[r][c] = changed[(r,c)]
 
-def run_process(X,Y, grid):
+def run__dlx_process(X,Y, grid):
     rows_used = set()
     for val in X.itervalues():
         for row in val:
             rows_used.add(row)
 
     rows = []
-    popen = subprocess.Popen(["./a.out"], shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    popen = subprocess.Popen(["./dlx"], shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     popen.stdin.write("%d %d\n"%(len(rows_used),len(X)))
     for row, cols in Y.items():
         if row not in rows_used:
@@ -117,35 +111,30 @@ def run_process(X,Y, grid):
                 popen.stdin.write("0 ")
         popen.stdin.write("\n")
     for line in popen.stdout.readlines():
-        yield rows, [int(i) for i in line.strip().split(" ")]
-        # print_grid_with_rows(rows, [int(i) for i in line.strip().split(" ")], grid)
+        print_grid_with_rows(rows, [int(i) for i in line.strip().split(" ")], grid)
 
 
 if __name__ == "__main__":
-    # grids = []
-    # for i in xrange(100):
-    #     grids.append(gen_rand_grid(3))
-    # start_time = time.time()
-    # for grid in grids:
-    #     for sol in solve_sudoku(3, grid):
-    #         pass
-    # print "python time:",time.time() - start_time, "seconds"
-    # start_time = time.time()
-    # for grid in grids:
-    #     X,Y, sol = sudoku_to_cover(3, grid)
-    #     for sol in run_process(X,Y,grid):
-    #         pass
-    # print "c++ time:",time.time() - start_time, "seconds"
+    grids = []
+    for i in xrange(500):
+        grids.append(gen_rand_grid(3))
+    for i, grid in enumerate(grids):
+        m = open("sat/minimal/sat%03d.cnf"%(i+1),"w")
+        clauses = sudoku_to_sat(grid,False)
+        for clause in clauses:
+            m.write(" ".join(clause))
+            m.write("\n")
+        m.close()
 
-    # print_grid(x)
-    # dlx_solver(2,x)
-    x = gen_rand_grid(3)
-    # X,Y,sol = sudoku_to_cover(3, x)
-    # print_cover(X,Y)
-    clauses = sudoku_to_sat(x,False)
-    for clause in clauses:
-        print " ".join(clause)
-    # run_process(X,Y,x)
-    # for sol in solve_sudoku(2, x):
-    #     print_grid(sol)
+        e = open("sat/extended/sat%03d.cnf"%(i+1),"w")
+        clauses = sudoku_to_sat(grid,True)
+        for clause in clauses:
+            e.write(" ".join(clause))
+            e.write("\n")
+        e.close()
+
+        c = open("cover/sat%03d.txt"%(i+1),"w")
+        X,Y, sol = sudoku_to_cover(3, grid)
+        print_cover(X,Y,c)
+        c.close()
 

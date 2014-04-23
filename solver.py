@@ -6,6 +6,7 @@
 from itertools import product
 from random import shuffle
 from collections import defaultdict
+from sys import stdout
 
 def solve_sudoku(size, grid, shuffle_rows=False):
     X,Y,solution = sudoku_to_cover(size, grid)
@@ -25,22 +26,22 @@ def sudoku_to_cover(size, grid):
     return X,Y,solution
 
 
-def print_cover(X,Y):
+def print_cover(X,Y, out=stdout):
     # print len(Y), len(X)
     rows_used = set()
     for val in X.itervalues():
         for row in val:
             rows_used.add(row)
-    print len(rows_used), len(X)
+    out.write("%s %s\n"%(len(rows_used), len(X)))
     for row, cols in Y.items():
         if row not in rows_used:
             continue;
         for col in X:
             if col in cols:
-                print "1",
+                out.write("1 ")
             else:
-                print "0",
-        print
+                out.write("0 ")
+        out.write("\n")
 
 
 def cover_to_sudoku(size, cover):

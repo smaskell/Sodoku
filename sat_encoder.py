@@ -1,3 +1,8 @@
+# Author: Samuel Maskell <samuelmaskell@gmail.com> 
+# Based on work by: Binnersley, Maskell and Simas
+# Copyright: (C) 2014 Samuel Maskell
+# License: GNU General Public License <http://www.gnu.org/licenses/>
+
 def encode(x,y,z, bar):
 	# assert 0<x<10 and 0<y<10 and 0<z<10
 	neg = "~" if bar else ""
@@ -80,10 +85,10 @@ def sub_grid_least(clauses):
 					
 
 def minimal_encoding(clauses):
-	entry_least(clauses)
 	row_most(clauses)
 	column_most(clauses)
 	sub_grid_most(clauses)
+	entry_least(clauses)
 	
 def extended_encoding(clauses):
 	minimal_encoding(clauses)
@@ -100,9 +105,9 @@ def filled_in(clauses,puzzle):
 
 def sudoku_to_sat(grid, extended=False):
 	clauses = []
+	filled_in(clauses, grid)
 	if extended:
 		extended_encoding(clauses)
 	else:
 		minimal_encoding(clauses)
-	filled_in(clauses, grid)
 	return clauses

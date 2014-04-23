@@ -104,7 +104,6 @@ void check_graph(Node *h) {
 }
 
 void select(Node *col){ 
-	// cout << "selecting col " << col->num << endl;
 	col->right->left = col->left;
 	col->left->right = col->right;
 
@@ -153,42 +152,33 @@ void print_solution(vector<int> *sol) {
 	cout << endl;
 }
 
-void search(Node *h, vector<int> *sol, int depth) {
-	// cout << "starting depth " << depth << endl;
+bool search(Node *h, vector<int> *sol, int depth) {
 	if (h->right == h) {
-		// cout << "printing solution" << endl;
 		print_solution(sol);
-		return;
+		return true;
 	}
 	Node* col = chooseNextColumn(h);
-	// cout << "removing col " << col->num << endl;
 	select(col);
-	// check_graph(h);
 
 	for(Node* row = col->down; row != col; row = row->down){
-		// cout << "removing row " << row->num << endl;
 		sol->push_back(row->num);
 
 		for(Node *right = row->right; right != row; right = right->right) {
 			select(right->col_header);
-			// check_graph(h);
 		}
 
-		search(h, sol, depth + 1);
-
-		// cout << "putting back " << row->num << endl;
+		if (search(h, sol, depth + 1)) {
+			return true;
+		}
 
 		for(Node *left = row->left; left != row; left=left->left){
 			deselect(left->col_header);
-			// check_graph(h);
 		}
 		sol->pop_back();
 	}
 
-	// cout << "deselecting col " << col->num << endl;
 	deselect(col);
-	// check_graph(h);
-	return;
+	return false;
 }
 
 int count_cols(Node* h) {
