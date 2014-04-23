@@ -51,7 +51,7 @@
 \end{titlepage}
 \pagestyle{fancy}
 \section{The Game of Sudoku}
-The game of Sudoku involves a 9 by 9 grid made up for nine 3 by 3 sub-grids, often referred to as blocks. Initially, certain cells contain a digit between 1 and 9 while others are left blank. The objective of the game is to fill in the remaining cells in such a way that each number between 1 and 9 appears exactly once in every row, every column, and every block. This can be accomplished using a variety of techniques to infer the possible candidates for a given cell, removing possibilities until only one remains. However, in the case of a computer, it is generally simpler to apply a simple backtracking technique. \\
+The game of Sudoku involves a 9 by 9 grid made up for nine 3 by 3 sub-grids, often referred to as blocks. Initially, certain cells contain a digit between 1 and 9 while others are left blank. The objective of the game is to fill in the remaining cells in such a way that each number between 1 and 9 appears exactly once in every row, every column, and every block[1]. This can be accomplished using a variety of techniques to infer the possible candidates for a given cell, removing possibilities until only one remains. However, in the case of a computer, it is generally simpler to apply a simple backtracking technique. \\
 
 \begin{figure}[!ht]
 \begin{center}
@@ -118,10 +118,10 @@ The game of Sudoku involves a 9 by 9 grid made up for nine 3 by 3 sub-grids, oft
 \end{center}
 \end{figure}
 
-Given the nature of the problem, solving Sudoku puzzles can easily be modelled as many different constraint satisfaction problems, such as exact cover or boolean satisfiability. In doing so, standard techniques for solving these well known problems can be applied rather than creating a customized solution.  \\
+Given the nature of the problem, solving Sudoku puzzles can easily be modelled as many different constraint satisfaction problems, such as exact cover[2] or boolean satisfiability[1]. In doing so, standard techniques for solving these well known problems can be applied rather than creating a customized solution.  \\
 
 \section{Sudoku as an Exact Cover Problem}
-Given a binary matrix, the exact cover problem is to find a set of rows such that there is a 1 in every column in exactly one of the rows in the set. Typically, the columns are used to represent constraints that must be satisfied. Each row in the matrix represents a partial solution, with conflicting partials solutions containing in the same column of their rows for the rule(s) on which they conflict. \\
+Given a binary matrix, the exact cover problem is to find a set of rows such that there is a 1 in every column in exactly one of the rows in the set. Typically, the columns are used to represent constraints that must be satisfied. Each row in the matrix represents a partial solution, with conflicting partials solutions containing in the same column of their rows for the rule(s) on which they conflict[3]. \\
 
 Sudoku has four types of constraints
 \begin{description}
@@ -130,11 +130,12 @@ Sudoku has four types of constraints
 \item[Column Constraints] Each column much contain each number exactly once
 \item[Block Constraints] Each block much contain each number exactly once
 \end{description}
-As such, the base set of constraints result in $4*9*9$ columns; there is a cell constraint for each of the 81 cells and there is a row, column and block constraint for each number in each row, column or block. Furthermore, there are $9*9*9$ rows, one for each number in each cell. The rows have 1's in the columns for the constraints that they satisfy. \\
+As such, the base set of constraints result in $4*9*9$ columns; there is a cell constraint for each of the 81 cells and there is a row, column and block constraint for each number in each row, column or block. Furthermore, there are $9*9*9$ rows, one for each number in each cell. The rows have 1's in the columns for the constraints that they satisfy[2]. \\
 
 Once the initial constraints have been set up, the columns all of the constraints which are satisfied by any of given cells in a puzzle can be removed, as well as all rows that could have satisfied any of those constraints. The remaining columns will be those which need to be satisfied in order to complete the puzzle and the rows will be the possible options.
 \section{Algorithm X and Dancing Links}
-In his paper, "Dancing Links", Donald Knuth describes an algorithm for solving the exact cover problem, which he calls Algorithm X, and a possible implementation technique, which he calls dancing links. This implementation is often referred to as DLX for short. \\
+In his paper, "Dancing Links", Donald Knuth describes an algorithm for solving the exact cover problem, which he calls Algorithm X, and a possible implementation technique, which he calls dancing links. This implementation is often referred to as DLX for short[3]. \\
+
 The dancing links approach is based on the observation that an element, x, in a doubly linked list can be removed in the following manner
 \[ x.left.right \gets x.right, x.right.left \gets x.left \]
 and, more interestingly, x can be re-inserted into the list thusly
@@ -219,9 +220,9 @@ The operation of ``covering'' is also fairly straight forward. We must simply re
 \section{Sudoku as a SAT Problem}
 The boolean satisfiability problem, SAT, involves finding a satisfying assignment for a boolean expression. These expressions are, typically, written in conjunctive normal form, CNF, i.e. a conjunction of a set of disjunctive clauses. As this is a very well understood problem, there are a wide array of efficient SAT solvers that can be used to solve problems that can be represented as a SAT problem, such as Sudoku. \\
 
-Similar to the exact cover problem, Sudoku lends itself well to being represented as a SAT problem. In order for a CNF expression to be satisfied, each clause must be satisfied, and in order of a clause to be satisfied, one of its literals must be true. As such, we can create a clause for each constraint, made up of literals that represent all of the possible ways to satisfy this constraint. However, we need to be careful to ensure that we do not end up with conflicting literals both being set to True in a satisfying assignment. This can be accomplished by carefully picking which constraints are used or by simply including all possible constraints. \\
+Similar to the exact cover problem, Sudoku lends itself well to being represented as a SAT problem. In order for a CNF expression to be satisfied, each clause must be satisfied, and in order of a clause to be satisfied, one of its literals must be true. As such, we can create a clause for each constraint, made up of literals that represent all of the possible ways to satisfy this constraint. However, we need to be careful to ensure that we do not end up with conflicting literals both being set to True in a satisfying assignment. This can be accomplished by carefully picking which constraints are used or by simply including all possible constraints[1]. \\
 
-The variables of a Sudoku are simply the entries in each of the cells. As such, there must be a variable $s_{xyz} \forall x,y,z \in [1,9]$ where $x$ is a row, $y$ is a column and $z$ is the value in the cell which lies in both row $x$ and column $y$. With this, we can build us clauses for each of the 4 necessary constraints. \\
+The variables of a Sudoku problem are simply the possible entries in each of the cells. As such, there must be a variable $s_{xyz} \forall x,y,z \in [1,9]$ where $x$ is a row, $y$ is a column and $z$ is the value in the cell which lies in both row $x$ and column $y$. With this, we can build us clauses for each of the 4 necessary constraints. \\
 
 \begin{description}
 \item[Every cell has at least one number] \hfill \\ \\
@@ -251,7 +252,7 @@ $\bigwedge\limits_{z=1}^{9} \bigwedge\limits_{i=0}^{2} \bigwedge\limits_{j=0}^{2
 The first 4 sets of constraints listed are usually known as the ``minimal encoding'' while the set of all 8 constraints is known as the ``extended encoding''. After all the constraint clauses are added, for either the minimal or extended encoding, we must then add clauses for each of the given elements in the initial grid. This clauses will only contain one literal, corresponding to the number and the row and column it appears in, forcing that variable to be true in any satisfying assignment.
 
 \section{Generating Sudoku Puzzles}
-In order to evaluate the different methods for solving Sudoku puzzles, a large set of puzzles is necessary for testing. Thankfully, the nature of the DLX algorithm makes it perfect for both solving and generating Sudoku puzzles. Given an empty starting grid, DLX will eventually generate all possible completed Sudoku puzzles. In order to randomize this process, so as to not generate a set of puzzles that are all closely related, we need only to randomize the order in which rows are selected at line 7 in Algorithm \ref{search}. The column selection need not be randomized as all columns must be selected at some point before a valid solution is found. The order in which the rows are selected, however, define which way each constraint is satisfied. \\
+In order to evaluate the different methods for solving Sudoku puzzles, a large set of puzzles is necessary for testing. Thankfully, the nature of the DLX algorithm makes it perfect for both solving and generating Sudoku puzzles. Given an empty starting grid, DLX will eventually generate all possible completed Sudoku puzzles. In order to randomize this process, so as to not generate a set of puzzles that are all closely related, we need only to randomize the order in which rows are selected at line 7 in Algorithm \ref{search}. The column selection need not be randomized as all columns must be selected at some point before a valid solution is found. The order in which the rows are selected, however, define which way each constraint is satisfied[2]. \\
 
 In order to speed up the process slightly, a random permutation of 1~9 can be placed in the first row without needing to do any validation. The same idea can be applied to filling in the first column and the first block, by simply permuting the remaining available numbers. However, this process is not necessary for the algorithm to be able to generate a random puzzle.\\
 
@@ -264,7 +265,7 @@ All source code is available on \href{https://github.com/smaskell/Sudoku}{GitHub
 \subsection{Sudoku Generation}
 In order to generate Sudoku puzzles, the Algorithm X was implemented in Python. This allowed for the algorithm to use of Python's generator construct. With this mechanic, the algorithm is very easily able to generate solutions to a given puzzle one at a time on demand, rather than generating all of them all at once, which is would be incredibly slow in the generation phase. \\
 
-A noted by Ali Assaf of McGill University, Algorithm X can be very easily and succinctly implemented in python by using two dictionary objects, one which maps a column name to a set of rows and one which does the opposite. Dictionary and set objects in Python constant time insertion and deletion methods which means that Algorithm X can be efficiently implemented using a very similar technique to dancing links. The dictionary and set data structure, however, allows for much simpler problem set-up. Furthermore, it is much simpler to permute a set in order to pick rows in a random order than it is to do so with a linked list. This makes the random generation process  very straightforward.\\
+A noted by Ali Assaf of McGill University, Algorithm X can be very easily and succinctly implemented in python by using two dictionary objects, one which maps a column name to a set of rows and one which does the opposite[4]. Dictionary and set objects in Python constant time insertion and deletion methods which means that Algorithm X can be efficiently implemented using a very similar technique to dancing links[5]. The dictionary and set data structure, however, allows for much simpler problem set-up. Furthermore, it is much simpler to permute a set in order to pick rows in a random order than it is to do so with a linked list. This makes the random generation process  very straightforward.\\
 
 \subsection{Sudoku Solving}
 \subsubsection{DLX}
@@ -273,7 +274,7 @@ In order to truly test the efficiency of DLX on a Sudoku problem, Python is not 
 As each row represents a certain digit being placed in a certain cell, it is very easy to map the result DLX, a list of rows, back to the Sudoku problem. One must simply fill in the cells that correspond to the rows in the solution to the exact cover problem in order to find the solution to the Sudoku puzzle.
 
 \subsubsection{SAT}
-As the Sudoku puzzles are generated in Python, another script for converting puzzles to SAT format was also written in Python. This conversion script is based heavily on the work done by Binnersley, Maskell and Simas. This converted form is then written to standard out so that it can be read by a SAT solver. A collection of Knuth's SAT solvers, including SAT0W, SAT9 and SAT10, was used for solving the resulting SAT problem. \\
+As the Sudoku puzzles are generated in Python, another script for converting puzzles to SAT format was also written in Python. This conversion script is based heavily on the work done by Binnersley, Maskell and Simas[6]. This converted form is then written to standard out so that it can be read by a SAT solver. A collection of Knuth's SAT solvers, including SAT0W, SAT10 and SAT13, was used for solving the resulting SAT problem. \\
 
 Each variable in the SAT problem correspond to a specific digit being placed in a certain cell. As such, one can find the solution to the Sudoku puzzle by filling in the cells corresponding to all of the unbarred literals in the satisfying assignment.
 
@@ -283,7 +284,7 @@ Five hundred Sudoku puzzles were generated using the techniques described earlie
 \begin{table}[H]
 \begin{center}
 \begin{tabular}{cccc}
-DLX - All solutions & DLX - Single Solution & SAT13 - Minimal & Sat13 - Extended\\
+DLX-All Sols & DLX-Single Sol & SAT13-Minimal & Sat13-Extended\\
 0.08678 & 0.085526 & 0.00628 & 0.007316
 \end{tabular}
 \caption{Average running time in seconds of the tested algorithms}
@@ -291,11 +292,29 @@ DLX - All solutions & DLX - Single Solution & SAT13 - Minimal & Sat13 - Extended
 \end{center}
 \end{table}
 
-Surprisingly, Knuth's SAT solver performed much better than DLX. However, it is clear than much time has been spent optimizing SAT13 so it is possible that better results could be achieved with DLX if it were to be optimized further. This is illustrated very clearly by the fact that some of Knuth's earlier SAT solvers, such as SAT10 and SAT0W, were also tested but were far too slow to complete the test set in any reasonable amount of time, taking many minutes to solve certain inputs. \\
+Surprisingly, Knuth's SAT solver performed much better than DLX. However, it is clear than much time has been spent optimizing SAT13 so it is possible that better results could be achieved with DLX if it were to be optimized further. This is illustrated very clearly by the fact that Knuth's earlier SAT solvers, SAT10 and SAT0W, were also tested but were far too slow to complete the test set in any reasonable amount of time, taking many minutes to solve certain inputs. \\
 
 Another surprising revelation is that DLX had almost identical performance whether it stopped after finding the first solution or not. This is most likely due to the fact that simply reading the input and building the data structure is the most expensive operation, and this is not affected by the change. If this process could be optimized, the algorithm would, most likely, run much faster. \\
 
 SAT13 performed very well on both the minimal and extended encoding, though the minimal encoding gave better results. This is likely due to the fact that reading in the extended encoding and building the data structures takes much longer, as the input is roughly twice the size of the minimal encoding. 
 \section{Conclusion}
 Given the nature of the Sudoku problem, it is very easy to map it to other constraint satisfaction problems. This allows for the use of well known algorithms such as DLX or certain SAT solving algorithms. Both of these approaches performed quite well, though Knuth's SAT13 yielded the best results. DLX, if slightly slower, however, is still ideal for Sudoku generation as it is able to easily generate all possible solutions to a Sudoku puzzle, rather than simply stopping after finding the first one.
+\pagebreak
+\section{References}
+\begin{verbatim}
+[1] 	I. Lynce and J. Ouaknine, "Sudoku as a SAT Problem," in ISAIM, 2006. 
+[2] 	G. Rees, "Zendoku puzzle generation," 10 June 2007. [Online]. 
+        Available: http://garethrees.org/2007/06/10/zendoku-generation.
+        [Accessed 23 April 2014].
+[3] 	D. Knuth, "Dancing Links," Millenial Perspectives in Computer Science,
+        pp. 187-214, 2000. 
+[4] 	A. Assaf, "Algorithm X in 30 Lines," 2010. [Online]. Available:
+        http://www.cs.mcgill.ca/~aassaf9/python/algorithm_x.html.
+        [Accessed 23 April 2014].
+[5] 	R. Pattis, "Complexity of Python Operations," 2014. [Online].
+        Available: https://www.ics.uci.edu/~pattis/ICS-33/lectures/
+        complexitypython.txt. [Accessed 23 April 2014].
+[6] 	C. Binnersley, S. Maskell and B. Simas, "SAT-based Sudoku Solving,"
+        2013.
+\end{verbatim}
 \end{document}
